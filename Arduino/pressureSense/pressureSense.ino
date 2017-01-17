@@ -1,4 +1,9 @@
-const long inflateInterval = 10;
+int pressureReadPin = 15;
+const unsigned short maintainPressure = 130;
+
+const int motorControlPin = 9;
+
+const long inflateInterval = 200;
 const long inflateWaitInterval     = 2000;
 const long deflateInterval = 2000;
 const long deflateWaitInterval     = 2000;
@@ -20,19 +25,40 @@ const int inflatePin = 13;
 const int deflatePin = 12;
 
 unsigned long previousMillis = 0;
+unsigned long previousMotorChange = 0;
 
 void setup() {
-  // put your setup code here, to run once:
+  Serial.begin(9600);
   pinMode(inflatePin, OUTPUT);
   pinMode(deflatePin, OUTPUT);
+  pinMode(motorControlPin, OUTPUT);
   controlState = StateDeflateWait;
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
   unsigned long currentMillis = millis();
   unsigned long delta = currentMillis - previousMillis;
+  
+  unsigned short pressureRead;
+  pressureRead = analogRead(pressureReadPin);
+  //Serial.println(pressureRead);
+  
+  // Control for output pressure
+  if ((currentMillis - previousMotorChange) > 1000)
+  {
+    if (pressureRead < maintainPressure)
+    {
+      digitalWrite(motorControlPin, HIGH);
+      previousMotorChange = currentMillis;
+    }
+    else
+    {
+      digitalWrite(motorControlPin, LOW);
+      previousMotorChange = currentMillis;
+    }
+  }
 
+  // Control for valve state
   if (controlState == StateInflate)
   {
     if (delta >= inflateInterval)
@@ -40,6 +66,7 @@ void loop() {
       digitalWrite(inflatePin, LOW);
       previousMillis = currentMillis;
       controlState = StateInflateWait;
+      Serial.println("State Inflate Wait");
     }   
   }
   else if (controlState == StateInflateWait)
@@ -49,6 +76,7 @@ void loop() {
       digitalWrite(deflatePin, HIGH);
       previousMillis = currentMillis;
       controlState = StateDeflate;
+      Serial.println("State Deflate");
     }
   }
 
@@ -59,6 +87,7 @@ void loop() {
       digitalWrite(deflatePin, LOW);
       previousMillis = currentMillis;
       controlState = StateDeflateWait;
+      Serial.println("State Deflate Wait");
     }
   }
 
@@ -69,6 +98,7 @@ void loop() {
       digitalWrite(inflatePin, HIGH);
       previousMillis = currentMillis;
       controlState = StateInflate;
+      Serial.println("State Inflate");
     }
   }
 }
