@@ -1,6 +1,10 @@
 # Capstone Project
 Teddy, Sasha, Sean, Neil, Amery
 
+Working with four other Northeastern University students, I developed a prototype sensory feedback device for use with virtual reality. I pushed for a familiar method of feedback and came up with the idea of using pneumatics to apply pressure to the hand. I worked on the project from its initial conception through the synthesis of the prototype and demo. To our excitement, the project earned second place at the semesters Capstone design competition. The system precisely distributes pneumatic pressure to a collection of pouches on a glove. The pouches are inflated and deflated based on commands received over a serial connection from a computer. Leveraging the large number of GPIOs on the Arduino Mega, it rapidly measures the pressure of each pouch and actuates specific solenoid valves to maintain a constant experience for the user. We integrated the serial communication in a demo using Unity and the Leap Motion allowing users to feel objects they touch in VR.
+
+![Working Prototype](./Capstone-Angle.jpg)
+
 ### Developer Setup Instructions
 
 Install [Processing 3](https://processing.org/download/?processing) preferably for all users
